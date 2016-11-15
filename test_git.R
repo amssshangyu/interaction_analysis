@@ -43,7 +43,7 @@ Sample_Info <- read.table("Parameter_Nov2013.txt", header = TRUE, sep = "\t", de
 ###################################################################
 #### combine the species abudance from the two part data
 taxafull<- cbind(taxa_candi,taxa$Myxomycetes_total)
-colnames(taxafull)[42]<-"Myxomycetes_total"
+colnames(taxafull)[17]<-"Myxomycetes_total"
 
 
 
@@ -53,6 +53,7 @@ colnames(taxafull)[42]<-"Myxomycetes_total"
 rownames(Sample_Info)<- Sample_Info$Plot
 envapara_tablefull <-Sample_Info
 
+mainpara <- c( "Inorganic_C", "Organic_C", "CN_ratio", "Fine_Roots_Biomass", "Coarse_Roots_Biomass", "roots_Total_C", "roots_Total_N", "roots_CN_ratio", "soil_moisture", "pH", "NH4", "NO3", "Nmin", "Cmic", "Cmic_Nmic") 
 envpara_table <-Sample_Info[,mainpara]
 
 
@@ -164,7 +165,7 @@ corrMatrix_Summ_150Sample <- cor(Abundscale)
 ###############################  
 ####         step 5      ######  
 ############################### 
-###### calculate the main parameters ####
+###### figure out the dominant parameters ####
 out_150Sample<-main_para(Abundscale,Parascale,0,10,2,speciesprecision,envprecision,threshold01)
 main_para_barplot(out_150Sample)
 
@@ -172,7 +173,8 @@ main_para_barplot(out_150Sample)
 ###############################  
 ####         step 6      ######  
 ###############################   
-#### chose the six examples #####  
+#### chose the six examples for the robust test::  strong positive, median positive, low positive,####
+####  strong negative, median negative, low negative.  #####  
 robust_test_rela<-six_test_robust(InterMatrix_Summ_150Sample_high_spe)
 
 
