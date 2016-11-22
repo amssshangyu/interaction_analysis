@@ -8,13 +8,14 @@
 
 
 ###############################  
-####         step 0      ######  
+####         step 1     ######  
 ###############################  
 
 ##### load library, data, function 
+
 #### the interaction calculation need the robust linear regression, therefore, we use the rlm in package MASS
-#### both species abundance and environmental data should be data frame in which the rows stand for the samples, and column stand for the species names or environmental parameter names
-#### there should be no NA values in the data, and no column which contain too many repeated values (for example, 0), therefore, we need to filter out the data  
+#### both species abundance and environmental data should be data frame in which the rows stand for the samples and column stand for the species names or environmental parameter names
+#### there should be no NA values in the data, and no column which contains too many repeated values (for example, 0), therefore, we need to filter out the data  
 
 library(MASS)  ##### this package include the rlm command 
 library(robust)
@@ -23,101 +24,21 @@ library(robust)
 ##  load your species abudance  and environmental parameter data
 
 
-load("taxa_candi.RData")  #### species abundance  part one
+load("Abundscale_git.RData")  #### species abundance  
 
-load("protist_myxobacteria_preytaxa_realabundances.rdata")  ####  species abundance  part two
+load("Parascale_git.rdata")  ####  environmental parameters
 
-Sample_Info <- read.table("Parameter_Nov2013.txt", header = TRUE, sep = "\t", dec = ",")  #### environmental parameters
-
-  
 
 ###### load the functions ##### 
 ######  this file contains all the functions which are needed in the interaction analysis
-  source("InteractionAnalysis_git.R")
-
-
-### filter the original data>>=
-
-
-
-###################################################################
-#### combine the species abudance from the two part data
-taxafull<- cbind(taxa_candi,taxa$Myxomycetes_total)
-colnames(taxafull)[17]<-"Myxomycetes_total"
-
-
-
-#################################################################
-#### extrat the main environmental parametes to the data frame
-
-rownames(Sample_Info)<- Sample_Info$Plot
-envapara_tablefull <-Sample_Info
-
-mainpara <- c( "Inorganic_C", "Organic_C", "CN_ratio", "Fine_Roots_Biomass", "Coarse_Roots_Biomass", "roots_Total_C", "roots_Total_N", "roots_CN_ratio", "soil_moisture", "pH", "NH4", "NO3", "Nmin", "Cmic", "Cmic_Nmic") 
-envpara_table <-Sample_Info[,mainpara]
-
-
-############################################################
-## filtering in the the environmental parameters, remove the NA value, remove the columes which contain too many repeated values
-
-Full_Filterenvpara_table <- FilterNA(envpara_table,0)  ####  0 means use the method which can keep the most information when we do the filtering
-Full_Filterenvpara_table <- Filterrepeat(Full_Filterenvpara_table,0.33) #### threshold 0.33 means one third of the values are the same value,
-
-###########################################################
-
-#####   the abundance  #######
-## filtering in the the environmental parameters, remove the NA value, remove the columes which contain too many repeated values
-
-RelaAbundOrig <- FilterNA(taxafull,0)
-
-
-###############################
-####  common samples after we did the filtering on both species and environmental parameters
-chosensample <- intersect(rownames(RelaAbundOrig),rownames(Full_Filterenvpara_table))
-
-
-##### determin the species abundance, and the environmental parameters data frame 
-RelaAbundOrig <-RelaAbundOrig[chosensample,]
-Full_Filterenvpara_table <- Full_Filterenvpara_table[chosensample,]
-
-
-
-
-
-
-###############################  
-####         step 1      ######  
-###############################  
-##### prepare the data frame for the direct interaction calculation  
-#### both species abundance and environmental dataframe should have the same samples 
-
-
-###### the main environmental parameters we need to consider in our test ####
-mainpara <- c( "Inorganic_C", "Organic_C", "CN_ratio", "Fine_Roots_Biomass", "Coarse_Roots_Biomass", "roots_Total_C", "roots_Total_N", "roots_CN_ratio", "soil_moisture", "pH", "NH4", "NO3", "Nmin", "Cmic", "Cmic_Nmic") 
-
-
-#### the species abundance
-RelaAbund <- RelaAbundOrig   
-Abundscale <- apply(RelaAbund, 2, function(x) scale(x, center = FALSE, scale = TRUE))  #### rescale the data
-rownames(Abundscale) <- rownames(RelaAbund)
-
-nSample<- nrow(RelaAbund)
-nSpe <- ncol(RelaAbund)
-
-#### the environmental parameters 
-EnvPara <- Full_Filterenvpara_table[rownames(RelaAbund),mainpara[mainpara %in% colnames(Full_Filterenvpara_table)]]
-Parascale <- apply(EnvPara, 2, function(x) scale(x, center = FALSE, scale = TRUE))  #### scale the data
-rownames(Parascale) <- rownames(EnvPara)
-
-nEnv <- ncol(EnvPara)
-
+source("InteractionAnalysis_git.R")
 
 
 ###############################  
 ####         step 2      ######  
 ###############################  
 ######  dest the singularity of the original data , and remove the columns which bring the singularity  
-RelaAbund<-testsingula(RelaAbund)
+RelaAbund<-testsingula(Abundscale)
 Parascale<-testsingula(Parascale)
 
 
@@ -145,8 +66,8 @@ factor02<-2  #### used to compare the difference between the positive and negati
 ###############################  
 
 
-##### the workflow to calculate the interacion level values are discribed in our paper
-### (1) calculate the rate of change of species abundance with respect to environmental parameter: use the function      rate_change, rate_change02,
+##### the workflow to calculate the interaction level values are described in our paper
+### (1) calculate the rate of change of species abundance with respect to the environmental parameter: use the function      rate_change, rate_change02,
 ### (2) calculate the interaction values for each species in the sense of environmental parameter: use the function      interinf, interinf02
 
 
@@ -155,7 +76,7 @@ factor02<-2  #### used to compare the difference between the positive and negati
 ##### calculate the interaction Matrix and correlation matrix ###########
 
 ### use the work flow method to calculate the global interaction matrix
-### function interMatrix02 use the functions:   rate_change02, and interinf02, summ_inter_ij_new
+### the function interMatrix02 use the functions:   rate_change02, and interinf02, summ_inter_ij_new
 InterMatrix_Summ_150Sample_high_spe <- interMatrix02 (Abundscale,Parascale,3,10,2,speciesprecision,envprecision,threshold01) 
 
 
