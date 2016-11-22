@@ -1,7 +1,7 @@
 ###### this R file contains all the functions which are needed in the interaction analysis
 
 
-#####  part A --  filter out the data:  FilterNA, FilterZero, Filterrepeat
+#####  part A --  filtering the data:  FilterNA, FilterZero, Filterrepeat
 #####  part B --  calculate derivative and original interaction values  :  rate_change, rate_change02, rate_change_low, interinf, interinf02, interinf03, interinf_low
 #####  part C --  calculate the interaction matirx:  interMatrix, interMatrix02, interMatrix_norm, interMatrix_norm_summ, interMatrix_low, interMatrix_ij, interMatrix_ij_low
 #####  part D --  statistic summary:  summ_inter_ij, summ_inter_ij_new, summ_interaction, anascatter
@@ -16,7 +16,7 @@
 
 ####################################################################
 ######                       part A                            ####
-###### filter out the data with the minimum missing information##### 
+###### filtering the data with the minimum missing information##### 
 ###################################################################
   FilterNA <- function (data,type){
     #### data is data frame of species abundance or environmental parameter 
@@ -114,9 +114,8 @@ Filterrepeat <- function(data,threshold){
 #################################################################  
   
 #### this  part contains all the functions which are used to calculate the rate of change of species abundance 
-#### and the original 4 dimentional interaction level values.  The calculation of rate of change need the species abundance and environmental parameters data.
-#### the interaction level need the additionaly the results of calculation of rate of change as the input data.
-  
+#### and the original 4 dimensional interaction values. The calculation of the rate of change needs the species abundance and environmental parameters data.
+#### the interaction need additionally the results of calculation of the rate of change as the input data.
   
   rate_change <- function(Y, X, i)
   {
@@ -180,8 +179,10 @@ Filterrepeat <- function(data,threshold){
 rate_change02 <- function(Y, X, i)
 { #### This function will calculate the first derivative of species i abundance with respect to
   #### all the environmental parameters in all the  samples. Depending on the data structure, this function
-  #### only consider the influnce of environmental parameters. The returned results are the 2 dimensional 
-  #### dataframe: row is the samples, column is the environmental parameter
+  #### only consider the influence of environmental parameters. The returned results are the 2 dimensional 
+  #### data frame: row is the samples, column is the environmental parameter
+  
+  
   
   ####   Y is the abundance 
   ####   X is the environmental parameter
@@ -233,7 +234,7 @@ rate_change_low <- function(Y, X, i)
 { #### This function will calculate the first derivative of species i abundance with respect to
   #### all the environmental parameters in all the  samples. Depending on the data structure, this function
   #### use the low precision method. The returned results are the 2 dimensional 
-  #### dataframe: row is the samples, column is the environmental parameter
+  #### data frame: row is the samples, column is the environmental parameter
   
   ####   Y is the abundance 
   ####   X is the environmental parameter
@@ -276,8 +277,8 @@ rate_change_low <- function(Y, X, i)
 interinf <- function(Y, X, DY, i){
   #### This function will calculate the interaction level of species i abundance 
   #### in all the  samples. Depending on the data structure, this function
-  #### will automatically chose the different specision methods. The returned results are the 3 dimensional array
-    
+  #### will automatically choose the different specific methods. The returned results are the 3-dimensional array
+  
   
   
   ####   Y is the abundance 
@@ -485,7 +486,7 @@ interinf03 <- function(Y, X, DY, i){
   ####        array[3] is the samples
   
   #### the model consider the influence from only the species abundance, use the Taylor expansion
-  ####  but do not divide by the abundace of species i 
+  ####  but do not divide by the abundance of species i 
   
   ####   Y is the abundance 
   ####   X is the environmental parameter
@@ -543,7 +544,7 @@ interinf_low <- function(Y, X, DY, i){
   ####        array[2] is the environmental parameters, 
   ####        array[3] is the samples
   
-  #### the model  use the low precision methods
+  #### the model uses the low precision methods
   
   ####   Y is the abundance 
   ####   X is the environmental parameter
@@ -600,11 +601,11 @@ interinf_low <- function(Y, X, DY, i){
 
 
 interMatrix <- function(Y,X,type){
-  ##### this functino is used to calculate the global interaction matrix between species
+  ##### this function is used to calculate the global interaction matrix between species
   ####  there are three methods to fix the global interaction value
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   ####   Y is the abundance 
   ####   X is the environmental parameter
   
@@ -643,13 +644,13 @@ interMatrix02 <- function(Y,X,type,count,factor02,speciesprecision,envprecision,
   ####   X is the environmental parameter
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   #### threshold01: is the parameter used in function summ_inter_ij_new
-  #### precision == "high",  use rate_change02 and interinf02
-  #### precision == "low" . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   nsample <- nrow(Y)
   nEnv <- ncol(X)
@@ -735,8 +736,8 @@ interMatrix_norm <- function(Y,X,speciesprecision,envprecision){
   ####   Y is the abundance 
   ####   X is the environmental parameter
   
-  #### precision == "high",  use rate_change02 and interinf02
-  #### precision == "low" . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   nsample <- nrow(Y)
   nEnv <- ncol(X)
@@ -776,15 +777,15 @@ interMatrix_norm <- function(Y,X,speciesprecision,envprecision){
 
 
 interMatrix_norm_summ <- function(Y,X,count,speciesprecision,envprecision){
-  ##### this functino is used to calculate the global interaction matrix between species
+  ##### this function is used to calculate the global interaction matrix between species
   ##### use the norm definition, but exclude the extreme values
   ####   Y is the abundance 
   ####   X is the environmental parameter
   
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   
-  #### precision == "high",  use rate_change02 and interinf02
-  #### precision == "low" . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   
   nsample <- nrow(Y)
@@ -895,7 +896,7 @@ interMatrix_low <- function(Y,X,type,count,factor02,threshold01){
 
 
 interMatrix_ij <- function(Y,X,species_i,species_j,type,count,factor02,speciesprecision,envprecision,threshold01){
-  ##### this functino is used to calculate the global interaction value beta_ij, one element in the interaction matrix
+  ##### this function is used to calculate the global interaction value beta_ij, one element in the interaction matrix
   ##### 
   ####   Y is the abundance 
   ####   X is the environmental parameter
@@ -903,13 +904,13 @@ interMatrix_ij <- function(Y,X,species_i,species_j,type,count,factor02,speciespr
   #### species_j is the index of species j
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, integer number: this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   #### threshold01: is the parameter used in function summ_inter_ij_new
-  #### precision == "high",  use rate_change02 and interinf02
-  #### precision == "low" . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   nsample <- nrow(Y)
   nEnv <- ncol(X)
@@ -1053,12 +1054,12 @@ interMatrix_ij_low <- function(Y,X,species_i,species_j,type,count,factor02,thres
 ######                       part D                          ####
 #### the statistic summary results of interaction results  ######
 #################################################################
-##### After calculate the original 4 dimensional interaction level value, we need to do some statistic summary to determine the global interaction matrix,
-##### besed on the pattern, we can decide whether the global interaction is positive,  negative, or no clear pattern
+##### After calculating the original 4-dimensional interaction level value, we need to do some statistic summary to determine the global interaction matrix,
+##### based on the pattern, we can decide whether the global interaction is positive,  negative, or no clear pattern
 
 
 summ_inter_ij <- function(Y,X,species_i,species_j,count,type,speciesprecision,envprecision){
-  ##### this functino is used to calculate the statistic summary of the original interaction value \beta^k_ij\alpha 
+  ##### this function is used to calculate the statistic summary of the original interaction value \beta^k_ij\alpha 
   ##### 
   ####   Y is the abundance 
   ####   X is the environmental parameter
@@ -1066,16 +1067,16 @@ summ_inter_ij <- function(Y,X,species_i,species_j,count,type,speciesprecision,en
   ####  species_j, index of species j
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   
-  #### threshold01: the threshold used to conpare positive and negative parts, 
+  #### threshold01: the threshold used to compare positive and negative parts, 
   #### whether the parameter belong to the types of "posi", "nega" or "no"
   
-  #### precision == high,  use rate_change02 and interinf02
-  #### precision == low . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   nsample <- nrow(Y)
   nEnv <- ncol(X)
@@ -1195,18 +1196,18 @@ summ_inter_ij <- function(Y,X,species_i,species_j,count,type,speciesprecision,en
 
 
 summ_inter_ij_new <- function(interinf_ij,count,type,threshold01){
-  ##### this functino is used to calculate the statistic summary of the original interaction value \beta^k_ij\alpha 
+  ##### this function is used to calculate the statistic summary of the original interaction value \beta^k_ij\alpha 
   ##### 
   ####  interinf_ij is the interaction data frame of  beta_ij
 
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   
-  #### threshold01: the threshold used to conpare positive and negative parts, 
+  #### threshold01: the threshold used to compare positive and negative parts, 
   #### whether the parameter belong to the types of "posi", "nega" or "no"
 
   
@@ -1470,18 +1471,21 @@ anascatter <-function(Y,X,interaction_ij,para,count){
 ####################################################################
 main_para<-function(Y,X,type,count,factor02,speciesprecision,envprecision,threshold01){
   
-  ##### this functino is used to find the main parameters
+  ##### this function is used to find the main parameters
   ##### Y species abundance
   ####  X environmental parameters
   
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   
-  #### threshold01: the threshold used to conpare positive and negative parts, 
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
+  
+  #### threshold01: the threshold used to compare positive and negative parts, 
   #### whether the parameter belong to the types of "posi", "nega" or "no"
   
   nsample <- nrow(Y)
@@ -1631,27 +1635,27 @@ main_para_barplot<- function(out){
 interMatrix_ij_permut <- function(Y,X,species_i,species_j,times,size,type,count,factor02,permut_type,speciesprecision,envprecision,threshold01){
   
   
-  ###### rondomly remove  size  species for times, save the 2 dimension interaction table into the data frame #####
+  ###### randomly remove  size  species for times, save the 2 dimension interaction table into the data frame #####
   #####  permut_type is "samples",  "species", "para"  
   ##### 
   ####   Y is the abundance 
   ####   X is the environmental parameter
   ####  species_i, index of species i
   ####  species_j, index of species j
-  ####  time, how many steps in  the permutation test
-  #### size,  control the number of removement of species or parameters
+  ####  time, how many times in  the random test
+  #### size,  control the number of movement of species or parameters
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   #### permutation type:  "species", "para", "samples"
-  #### threshold01: the threshold used to conpare positive and negative parts, 
-  #### whether the parameter belong to the types of "posi", "nega" or "no"
+  #### threshold01: the threshold used to compare positive and negative parts, 
+  #### whether the parameter belongs to the types of "posi", "nega" or "no"
   
-  #### precision == "high",  use rate_change02 and interinf02
-  #### precision == "low" . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   
   nsample <- nrow(Y)
@@ -1736,25 +1740,25 @@ interMatrix_ij_permut <- function(Y,X,species_i,species_j,times,size,type,count,
 
 ######### add the random error to the original data ####
 interMatrix_ij_env_spe_robust <- function(Y,X,species_i,species_j,times,threshold,type,count,factor02,speciesprecision,envprecision,threshold01){
-  ##### this function is used to calculate the robust test on species abundace and environmental parameter,  add the random error to the original data
+  ##### this function is used to calculate the robust test on species abundance and environmental parameter,  add the random error to the original data
   ####   Y is the abundance 
   ####   X is the environmental parameter
   ####  species_i, index of species i
   ####  species_j, index of species j
-  #### times, how many times of the robust test
+  #### times, how many times of the random test
   #### threshold, error bar level
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   
-  #### threshold01: the threshold used to conpare positive and negative parts, 
-  #### whether the parameter belong to the types of "posi", "nega" or "no"
+  #### threshold01: the threshold used to compare positive and negative parts, 
+  #### whether the parameter belongs to the types of "posi", "nega" or "no"
   
-  #### precision == "high",  use rate_change02 and interinf02
-  #### precision == "low" . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   ### threshold means 5% or 10% or etc. 
   nsample <- nrow(Y)
@@ -1793,25 +1797,25 @@ interMatrix_ij_env_spe_robust <- function(Y,X,species_i,species_j,times,threshol
 
 interMatrix_ij_env_robust <- function(Y,X,species_i,species_j,times,threshold,type,count,factor02,speciesprecision,envprecision,threshold01){
   
-  ##### this function is used to calculate the robust test,  add the random error to the original data
+  ##### this function is used to calculate the robust test on environmental parameter,  add the random error to the original data
   ####   Y is the abundance 
   ####   X is the environmental parameter
   ####  species_i, index of species i
   ####  species_j, index of species j
-  #### times, how many times of the robust test
+  #### times, how many times of the random test
   #### threshold, error bar level
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   
-  #### threshold01: the threshold used to conpare positive and negative parts, 
-  #### whether the parameter belong to the types of "posi", "nega" or "no"
+  #### threshold01: the threshold used to compare positive and negative parts, 
+  #### whether the parameter belongs to the types of "posi", "nega" or "no"
   
-  #### precision == "high",  use rate_change02 and interinf02
-  #### precision == "low" . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   
   ### threshold means 5% or 10% or etc. 
@@ -1884,16 +1888,16 @@ interMatrix_ij_permut02 <- function(Y,X,species_i,species_j,type,count,factor02,
   ####  species_j, index of species j
   #### type = 0, use the mean value 
   #### type = 1, use the median value
-  #### type = 2, use the whighted mean value
+  #### type = 2, use the weighted mean value
   #### type = 3, use the work flow method to give the statistic estimation
   #### count, this is used to calculate the histogram distribution in count segments based on the minimum and maximum value 
   #### factor02, a factor used to compare the negative and positive parts
   
-  #### threshold01: the threshold used to conpare positive and negative parts, 
+  #### threshold01: the threshold used to compare positive and negative parts, 
   #### whether the parameter belong to the types of "posi", "nega" or "no"
   
-  #### precision == high,  use rate_change02 and interinf02
-  #### precision == low . use rate_chang_low and interinf_low
+  #### speciesprecision, or envprecision == "high",  use rate_change02 and interinf02
+  #### speciesprecision, or envprecision == "low" . use rate_chang_low and interinf_low
   
   ######  remove one  species  or one parameter #####
   #####  permut_type  is species  or para  #####
