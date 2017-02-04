@@ -47,7 +47,7 @@
       
     }else{
       NAcol<- apply(data, 2, function(x) length(which(is.na(x))))
-      data <- data[which(NAcol==0),]  
+      data <- data[,which(NAcol==0)]  
     }
     
     return(data)
@@ -83,7 +83,7 @@ FilterZero <- function (data,type){
     
   }else{
     Zerocol<- apply(data, 2, function(x) length(which(x==0.0)))
-    data <- data[which(Zerocol==0.0),]  
+    data <- data[,which(Zerocol==0.0)]  
   }
   
   return(data)
@@ -1516,7 +1516,7 @@ main_para<-function(Y,X,type,count,factor02,speciesprecision,envprecision,thresh
     }
     
     for(j in 1:nSpe){
-      interinf_ij <- interaction[species_j,,]
+      interinf_ij <- interaction[j,,]
       #Summ_interinf_ij <- summ_inter_ij(Y,X,i,j,count,0)
       Summ_interinf_ij <- summ_inter_ij_new(interinf_ij,count,0,threshold01)
       
@@ -1531,20 +1531,22 @@ main_para<-function(Y,X,type,count,factor02,speciesprecision,envprecision,thresh
       }else{
         #       x1<-Summ_interinf_ij[which(Summ_interinf_ij$intertype=="+"),c("peakvalue")]
         #       x1<-as.matrix(x1)
-        #Posimedian <- median(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="+"),c("peakvalue")])
-        #Negamedian <- median(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="-"),c("peakvalue")])
+        if("+" %in% Summ_interinf_ij$intertype ){
+          Posimedian <- median(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="+"),c("peakvalue")])
+          posipara<-rownames(Summ_interinf_ij)[which(Summ_interinf_ij$intertype=="+")]
+          maxi_posi <- max(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="+"),c("peakvalue")])
+          domi_posi <- posipara[which(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="+"),c("peakvalue")]>0.7*maxi_posi)]
+          temp_domi_posi[1,domi_posi]<-1
+        }
         
-        posipara<-rownames(Summ_interinf_ij)[which(Summ_interinf_ij$intertype=="+")]
-        negapara<-rownames(Summ_interinf_ij)[which(Summ_interinf_ij$intertype=="-")]
-        
-        maxi_posi <- max(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="+"),c("peakvalue")])
-        mini_nega <- min(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="-"),c("peakvalue")])
-        
-        domi_posi <- posipara[which(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="+"),c("peakvalue")]>0.7*maxi_posi)]
-        domi_nega <- negapara[which(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="-"),c("peakvalue")]<0.7*mini_nega)]
-        
-        temp_domi_posi[1,domi_posi]<-1
-        temp_domi_nega[1,domi_nega]<-1
+        if("-" %in% Summ_interinf_ij$intertype ){
+          Negamedian <- median(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="-"),c("peakvalue")])
+          negapara<-rownames(Summ_interinf_ij)[which(Summ_interinf_ij$intertype=="-")]
+          mini_nega <- min(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="-"),c("peakvalue")])
+          domi_nega <- negapara[which(Summ_interinf_ij[which(Summ_interinf_ij$intertype=="-"),c("peakvalue")]<0.7*mini_nega)]
+          temp_domi_nega[1,domi_nega]<-1
+        }
+       
         
         
         if ((length(posipara)==nEnv)| (Posimedian>(factor02*abs(Negamedian))) ) {
