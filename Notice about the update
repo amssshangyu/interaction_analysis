@@ -1,0 +1,12 @@
+13.10.2017
+
+Fix the bugs of the function "interMatrix02" in file "InteractionAnalysis_git.R".  
+
+Line 710,            wrong :     }else if ((posipara==0)|(posipara>0.8*nEnv)){
+                    correct:     }else if ((negapara==0)|(posipara>0.8*nEnv)){
+                    
+                    
+Fix the bugs of the function "testsingula" in file "InteractionAnalysis_git.R".
+
+line 1972            wrong :     temp<- data[,-which(names==remove)]
+                    correct:     temp<- data[,-which(names %in% remove)]
