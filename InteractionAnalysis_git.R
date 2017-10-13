@@ -707,7 +707,7 @@ interMatrix02 <- function(Y,X,type,count,factor02,speciesprecision,envprecision,
           if((posipara==0)|(negapara>0.8*nEnv)){
             #### if there is no positive part, or the number of negative part is 80% of the total numner,  negative part is dominant 
             results[species_i,species_j] <-  Negamedian
-          }else if ((posipara==0)|(posipara>0.8*nEnv)){
+          }else if ((negapara==0)|(posipara>0.8*nEnv)){
             #### if there is no negative part, or the number of positive part is 80% of the total numner,  positive part is dominant 
             results[species_i,species_j] <- Posimedian
           }else if (Posimedian>(factor02*abs(Negamedian))){
@@ -1969,7 +1969,7 @@ testsingula<-function(data){
     temp<- data
     while(qr(temp)$rank< ncol(temp)){
       remove<- sample(names,N3,replace = FALSE)
-      temp<- data[,-which(names==remove)]
+      temp<- data[,-which(names %in% remove)]
       
     }
     
@@ -1977,8 +1977,6 @@ testsingula<-function(data){
   }
   return(results)
 }
-
-
 
 
 
