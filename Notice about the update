@@ -10,3 +10,16 @@ Fix the bugs of the function "testsingula" in file "InteractionAnalysis_git.R".
 
 line 1972            wrong :     temp<- data[,-which(names==remove)]
                     correct:     temp<- data[,-which(names %in% remove)]
+
+
+17.01.2020
+
+add comments in the file test_git.R
+
+line 104-109   
+### !!!! I suggest using rate_change02, interinf02 to do the analysis.  
+### !!!! This is because rate_change, interinf construct the linear regreesin modle by taking into account
+### !!!! both the environmental parameter and all the species. 
+### !!!! Although this is the final full version of the model, it is too complicate for rlm to do the analysis, 
+### !!!! it can bring the default error from rlm calculation.
+### !!!! rate_change02, interinf02 only use the environmental parameter in the linear regression to simplify the calculation.
