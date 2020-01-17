@@ -28,7 +28,7 @@ library(robust)
 library(reshape)
 library(ggplot2)
 
-
+setwd("d:/user/yus14/Desktop/R_SweaveWorks/Microbial Community Interaction/git")
 
 
 
@@ -264,6 +264,16 @@ factor02<-2  #### used to compare the difference between the positive and negati
 ##### the workflow to calculate the interaction level values are described in our paper
 ### (1) calculate the rate of change of species abundance with respect to the environmental parameter: use the function      rate_change, rate_change02,
 ### (2) calculate the interaction values for each species in the sense of environmental parameter: use the function      interinf, interinf02
+
+
+
+### !!!! I suggest using rate_change02, interinf02 to do the analysis.  
+### !!!! This is because rate_change, interinf construct the linear regreesin modle by taking into account
+### !!!! both the environmental parameter and all the species. 
+### !!!! Although this is the final full version of the model, it is too complicate for rlm to do the analysis, 
+### !!!! it can bring the default error from rlm calculation.
+### !!!! rate_change02, interinf02 only use the environmental parameter in the linear regression to simplify the calculation.
+
 
 
 
