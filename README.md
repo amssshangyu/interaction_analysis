@@ -43,7 +43,7 @@ The detailed description of these function can be found in the file “Interacti
 ps: additional tools (it is not presented in the manuscript):   Figure out the dominant parameters. Use the function: main_para()
 
 
-
+The variation of interaction coefficients (fig2 in my paper) is shown in the file variation of interaction coefficients.R
 
 
 
