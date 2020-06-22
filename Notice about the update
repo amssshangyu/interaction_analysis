@@ -23,3 +23,8 @@ line 104-109
 ### !!!! Although this is the final full version of the model, it is too complicate for rlm to do the analysis, 
 ### !!!! it can bring the default error from rlm calculation.
 ### !!!! rate_change02, interinf02 only use the environmental parameter in the linear regression to simplify the calculation.
+
+
+22.06.2020
+
+add a file variation of interaction coefficients.R to show generating the fig2 in my paper
